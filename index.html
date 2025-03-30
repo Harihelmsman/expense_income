@@ -1778,7 +1778,104 @@ function setupImportFeature() {
     }
   });
 }
+// Add these to the setupEventListeners() function:
 
+// Mobile menu functionality
+document.getElementById('mobile-menu-btn').addEventListener('click', () => {
+  document.getElementById('mobile-menu').style.display = 'flex';
+});
+
+document.getElementById('mobile-menu-close').addEventListener('click', () => {
+  document.getElementById('mobile-menu').style.display = 'none';
+});
+
+// Mobile form overlay
+document.getElementById('mobile-fab').addEventListener('click', () => {
+  document.getElementById('form-overlay').style.display = 'flex';
+});
+
+document.getElementById('form-close').addEventListener('click', () => {
+  document.getElementById('form-overlay').style.display = 'none';
+});
+
+// Mobile add transaction button
+document.getElementById('mobile-add-btn').addEventListener('click', () => {
+  document.getElementById('mobile-menu').style.display = 'none';
+  document.getElementById('form-overlay').style.display = 'flex';
+});
+
+// Mobile form submission
+document.getElementById('mobile-transaction-form').addEventListener('submit', (e) => {
+  e.preventDefault();
+  
+  const desc = document.getElementById('mobile-desc').value;
+  const amount = document.getElementById('mobile-amount').value;
+  const type = document.getElementById('mobile-type').value;
+  const category = document.getElementById('mobile-category').value;
+  
+  if (!desc.trim() || !amount.trim()) {
+    alert('Please add a description and amount');
+    return;
+  }
+  
+  const transaction = {
+    id: generateID(),
+    description: desc,
+    amount: +amount,
+    type: type,
+    category: category,
+    date: new Date().toISOString()
+  };
+  
+  transactions.push(transaction);
+  saveTransactions();
+  
+  renderTransactionsList();
+  updateSummary();
+  renderBarGraph();
+  renderPieChart();
+  
+  // Clear form and close overlay
+  document.getElementById('mobile-desc').value = '';
+  document.getElementById('mobile-amount').value = '';
+  document.getElementById('mobile-type').value = 'income';
+  document.getElementById('mobile-category').value = 'salary';
+  document.getElementById('form-overlay').style.display = 'none';
+});
+
+// Clear transactions button
+document.getElementById('clear-transactions').addEventListener('click', () => {
+  if (transactions.length > 0 && confirm('Are you sure you want to delete all transactions?')) {
+    transactions = [];
+    saveTransactions();
+    init();
+  }
+});
+
+// Mobile theme toggle
+document.getElementById('mobile-theme-toggle').addEventListener('click', toggleTheme);
+
+// Graph scroll buttons (simple implementation)
+document.getElementById('graph-scroll-left').addEventListener('click', () => {
+  const container = document.querySelector('.graph-container');
+  container.scrollBy({ left: -100, behavior: 'smooth' });
+});
+
+document.getElementById('graph-scroll-right').addEventListener('click', () => {
+  const container = document.querySelector('.graph-container');
+  container.scrollBy({ left: 100, behavior: 'smooth' });
+});
+
+// Mobile export and stats buttons
+document.getElementById('mobile-export-btn').addEventListener('click', () => {
+  document.getElementById('mobile-menu').style.display = 'none';
+  exportData();
+});
+
+document.getElementById('mobile-stats-btn').addEventListener('click', () => {
+  document.getElementById('mobile-menu').style.display = 'none';
+  showStatistics();
+});
 // Initialize the app
 init();
 setupImportFeature();
